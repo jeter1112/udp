@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">udp</string>
+    <string name="ip"></string>
+    <string name="port"></string>
+    <string name="reset"></string>
+    <string name="begin"></string>
+
+    <string name="send"></string>
+
+
+</resources>
