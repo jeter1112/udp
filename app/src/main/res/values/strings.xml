@@ -4,7 +4,7 @@
     <string name="port"></string>
     <string name="reset"></string>
     <string name="begin"></string>
-
+    <string name="duration"></string>
     <string name="send"></string>
 
 
