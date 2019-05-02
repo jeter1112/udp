@@ -8,6 +8,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,32 +26,30 @@ import java.net.InetAddress;
 import java.net.SocketException;
 
 
+
 public class MainActivity extends AppCompatActivity {
     public static String SERVERIP="192.168.10.1";
     public static final int SERVERPORT = 5210;
 
-    private EditText mIP;
-    private Button   mreset;
-    private Button   mConnect;
-    private TextView mport;
+    private EditText mIP;  //ipaddress Edit text; default "192.168.10.1";
+    private Button   mreset;// Reset Button;
+    private Button   mConnect;// Connect Button;
+    private TextView mport;   // Udp port view;
 
-    private TextView msend;
+    private TextView msend;   // angle information;
 
-
+    /** accelarator,magnetor;  and value*/
     private SensorManager sm;
     private Sensor acc;
     private Sensor mag;
-
 
     private float[]accValue=new float[3];
     private float[]magValue=new float[3];
 
 
+    /** absolute angle and relative one **/
     private float[] minit_angle;
-
     private float[] mpresent_angle;
-
-
     private int [] mrelative_angle;
 
 
@@ -62,21 +61,38 @@ public class MainActivity extends AppCompatActivity {
     private int mudport=5210;
     private String maddr="192.168.1.1";
 
+
+    /** for udp socket thread */
     private Thread thread=null;
 
 
-    private int mtimes=0;
-    private int m_reset_flag=0;
 
+    private int mtimes=0;       // for stop and connect control;
+    private int m_reset_flag=0; // for udp transmit "reset " information;
+    private int mslot;  // send duration;
+
+    private EditText mduration; // duration view;
+
+
+
+    /**
+     * 1. init GUI, and sensors;
+     *
+     * 2. register events;
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        init_view();
+
+        //1.
+        init_view(); // init sensor, values and gui;
 
 
+        //2. register events;
 
+        // button click event for reset;
         mreset.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -89,11 +105,12 @@ public class MainActivity extends AppCompatActivity {
 
                 }
                 m_reset_flag=1;
+                mslot=Integer.parseInt(mduration.getText().toString());
 
             }
         });
 
-
+        //button clickevents for connect and stop;
         mConnect.setOnClickListener(new View.OnClickListener()
         {
 
@@ -129,6 +146,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        //timer handler for textview angle infor;
+        final Handler h = new Handler();
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+
+                String angleinfo="Angle:"+mrelative_angle[0]+"\t IP:"+maddr;
+                msend.setText(angleinfo);
+                h.postDelayed(this, mslot);
+            }
+        });
+
+
     }
 
 
@@ -153,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+// udp socket thread;
 
     class ClientSend implements Runnable {
         @Override
@@ -183,7 +213,8 @@ public class MainActivity extends AppCompatActivity {
                         DatagramPacket packet = new DatagramPacket(buf, buf.length,serverAddr,mudport);
 
                         udpSocket.send(packet);
-                        Thread.sleep(1000);
+
+                        Thread.sleep(mslot);
 
                     }
 
@@ -269,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
         mConnect = (Button)   findViewById(R.id.begin);
         mport  = (TextView) findViewById(R.id.port);
         msend  = (TextView) findViewById(R.id.send);
+        mduration=(EditText) findViewById(R.id.duration);
         minit_angle = new float[3];
         mpresent_angle=new float[3];
         mrelative_angle=new int[3];
@@ -278,6 +310,8 @@ public class MainActivity extends AppCompatActivity {
 
         acc=sm.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mag=sm.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        mslot=1000;
 
     }
 
