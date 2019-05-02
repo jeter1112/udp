@@ -18,7 +18,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="   IP    "
+                android:text="      IP        "
                 android:textSize="24dp"
                 android:textColor="@color/colorPrimaryDark"/>
             <EditText
@@ -28,8 +28,10 @@
                 android:text="192.168.1.1"
                 android:textSize="24dp"
                 />
-        </LinearLayout>
 
+
+
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -38,7 +40,27 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="PORT "
+                android:text="Slot(ms)  "
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="24dp"
+                />
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/duration"
+                android:text="1000"
+                android:textSize="24dp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="   PORT     "
                 android:textSize="24dp"
                 android:textColor="@color/colorPrimaryDark"/>
 
@@ -86,8 +108,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorAccent"
             android:textSize="16dp"
-            android:text="First Reset to make current angle 0.Then Send!\n
-                Duration is 1 second Now."/>
+            android:text="Reset Angle and send Duration(default 1s)."/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
